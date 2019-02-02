@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Serpentine.IISModule
+namespace Serpentine.IISModule.Tasks.Helpers
 {
     internal class ResponseSizeFilter : Stream
     {

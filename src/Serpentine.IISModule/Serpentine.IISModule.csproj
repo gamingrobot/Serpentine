@@ -42,9 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RequestTimer.cs" />
-    <Compile Include="ResponseSizeFilter.cs" />
-    <Compile Include="ResponseSizeStorage.cs" />
+    <Compile Include="Tasks\IMetricsTask.cs" />
+    <Compile Include="Tasks\RequestTimingTask.cs" />
+    <Compile Include="Tasks\Helpers\RequestTimer.cs" />
+    <Compile Include="Tasks\Helpers\ResponseSizeFilter.cs" />
+    <Compile Include="Tasks\Helpers\ResponseSizeStorage.cs" />
+    <Compile Include="Tasks\ResponseSizeTask.cs" />
     <Compile Include="SerpentineModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

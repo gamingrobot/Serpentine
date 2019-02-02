@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Serpentine.IISModule
+namespace Serpentine.IISModule.Tasks.Helpers
 {
     internal class RequestTimer
     {
@@ -41,6 +41,12 @@ namespace Serpentine.IISModule
         public long GetHandlerMilliseconds()
         {
             return _handlerStopwatch.ElapsedMilliseconds;
+        }
+
+        public void Reset()
+        {
+            _requestStopwatch.Reset();
+            _handlerStopwatch.Reset();
         }
 
     }

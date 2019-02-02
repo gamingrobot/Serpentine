@@ -1,15 +1,22 @@
 ﻿using System;
-using System.Net.Mime;
+using System.Collections.Generic;
 using System.Web;
+using Serpentine.IISModule.Tasks;
 
 namespace Serpentine.IISModule
 {
     public class SerpentineModule : IHttpModule
     {
-        private const string RequestTimerKey = "SerpentineRequestTimer";
+        private IList<IMetricsTask> _metricsTasks;
 
         public void Init(HttpApplication context)
         {
+            _metricsTasks = new List<IMetricsTask>
+            {
+                new RequestTimingTask(context),
+                new ResponseSizeTask(context)
+            };
+
             context.BeginRequest += OnBeginRequest;
             context.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
             context.PostRequestHandlerExecute += OnPostRequestHandlerExecute;
@@ -18,63 +25,33 @@ namespace Serpentine.IISModule
 
         private void OnBeginRequest(object sender, EventArgs e)
         {
-            var app = (HttpApplication) sender;
-            var context = app.Context;
-
-            context.Response.Filter = new ResponseSizeFilter(context.Response.Filter);
-
-            var requestTimer = new RequestTimer();
-            context.Items.Add(RequestTimerKey, requestTimer);
-
-            requestTimer.StartRequestTimer();
+            foreach (var task in _metricsTasks)
+            {
+                task.BeginRequest();
+            }
         }
 
         private void OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
-            var app = (HttpApplication) sender;
-            var context = app.Context;
-            var requestTimer = (RequestTimer) context.Items[RequestTimerKey];
-
-            requestTimer.StartHandlerTimer();
+            foreach (var task in _metricsTasks)
+            {
+                task.PreHandler();
+            }
         }
 
         private void OnPostRequestHandlerExecute(object sender, EventArgs e)
         {
-            var app = (HttpApplication) sender;
-            var context = app.Context;
-            var requestTimer = (RequestTimer) context.Items[RequestTimerKey];
-
-            requestTimer.StopHandlerTimer();
+            foreach (var task in _metricsTasks)
+            {
+                task.PostHandler();
+            }
         }
 
         private void OnEndRequest(object sender, EventArgs e)
         {
-            var app = (HttpApplication) sender;
-            var context = app.Context;
-
-            var requestTimer = (RequestTimer) context.Items[RequestTimerKey];
-            requestTimer.StopRequestTimer();
-
-            var sizeFilter = context.Response.Filter;
-            ResponseSizeStorage.Instance.UpdateSize(sizeFilter.Length);
-
-            context.Response.AppendHeader("X-Serpentine-RequestTime", requestTimer.GetRequestMilliseconds().ToString());
-            context.Response.AppendHeader("X-Serpentine-HandlerTime", requestTimer.GetHandlerMilliseconds().ToString());
-            context.Response.AppendHeader("X-Serpentine-RequestSize", sizeFilter.Length.ToString());
-            context.Response.AppendHeader("X-Serpentine-RequestSizeMin", ResponseSizeStorage.Instance.MinimumSize.ToString());
-            context.Response.AppendHeader("X-Serpentine-RequestSizeMax", ResponseSizeStorage.Instance.MaximumSize.ToString());
-            context.Response.AppendHeader("X-Serpentine-RequestSizeAvg", ResponseSizeStorage.Instance.AverageSize.ToString());
-
-
-            //Inject html
-            if (context.Response.ContentType == MediaTypeNames.Text.Html)
+            foreach (var task in _metricsTasks)
             {
-                context.Response.Write($"RequestTime: {requestTimer.GetRequestMilliseconds()}ms<br/>");
-                context.Response.Write($"HandlerTime: {requestTimer.GetHandlerMilliseconds()}ms<br/>");
-                context.Response.Write($"RequestSize: {sizeFilter.Length} bytes<br/>");
-                context.Response.Write($"RequestSizeMin: {ResponseSizeStorage.Instance.MinimumSize} bytes<br/>");
-                context.Response.Write($"RequestSizeMax: {ResponseSizeStorage.Instance.MaximumSize} bytes<br/>");
-                context.Response.Write($"RequestSizeAvg: {ResponseSizeStorage.Instance.AverageSize} bytes<br/>");
+                task.EndRequest();
             }
         }
 
