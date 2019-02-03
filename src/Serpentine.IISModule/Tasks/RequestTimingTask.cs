@@ -1,4 +1,5 @@
-﻿using Serpentine.IISModule.Tasks.Helpers;
+﻿using Serpentine.IISModule.Models;
+using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
@@ -38,9 +39,9 @@ namespace Serpentine.IISModule.Tasks
             _requestTimer.StopRequestTimer();
 
             _taskContext.MetricsResponse.AddMetric("request-time", "Request Time",
-                _requestTimer.GetRequestMilliseconds(), "ms");
+                _requestTimer.GetRequestMilliseconds(), MetricType.Duration);
             _taskContext.MetricsResponse.AddMetric("request-handler-time", "Request Handler Time",
-                _requestTimer.GetHandlerMilliseconds(), "ms");
+                _requestTimer.GetHandlerMilliseconds(), MetricType.Duration);
         }
     }
 }

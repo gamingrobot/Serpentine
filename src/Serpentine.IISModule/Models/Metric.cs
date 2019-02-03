@@ -1,10 +1,10 @@
-﻿namespace Serpentine.IISModule
+﻿namespace Serpentine.IISModule.Models
 {
     internal class Metric
     {
         public string Name { get; set; }
         public string FullName { get; set; }
         public long Value { get; set; }
-        public string Units { get; set; }
+        public MetricType Type { get; set; }
     }
 }

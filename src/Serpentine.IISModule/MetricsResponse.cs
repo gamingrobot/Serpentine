@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Net.Mime;
 using System.Web;
+using Serpentine.IISModule.Models;
 
 namespace Serpentine.IISModule
 {
     internal interface IMetricsResponse
     {
         void AddMetric(Metric metric);
-        void AddMetric(string name, string fullName, long value, string units);
+        void AddMetric(string name, string fullName, long value, MetricType type);
         void Render(HttpResponseBase baseResponse);
     }
 
@@ -25,14 +26,14 @@ namespace Serpentine.IISModule
             _metrics.Add(metric);
         }
 
-        public void AddMetric(string name, string fullName, long value, string units)
+        public void AddMetric(string name, string fullName, long value, MetricType type)
         {
             AddMetric(new Metric
             {
                 Name = name,
                 FullName = fullName,
                 Value = value,
-                Units = units
+                Type = type
             });
         }
 
@@ -41,13 +42,33 @@ namespace Serpentine.IISModule
             foreach (var metric in _metrics)
             {
                 //Set header
-                baseResponse.AppendHeader($"x-serpentine-{metric.Name}", metric.Value.ToString());
+                if (metric.Type == MetricType.Duration)
+                {
+                    baseResponse.AppendHeader("Server-Timing", $"{metric.Name};dur={metric.Value}");
+                }
+                else
+                {
+                    baseResponse.AppendHeader($"x-serpentine-{metric.Name}", $"{metric.Value}");
+                }
 
                 //Inject html
                 if (baseResponse.ContentType == MediaTypeNames.Text.Html)
                 {
-                    baseResponse.Write($"{metric.FullName}: {metric.Value}{metric.Units}<br/>");
+                    baseResponse.Write($"{metric.FullName}: {metric.Value} {GetUnits(metric.Type)}<br/>");
                 }
+            }
+        }
+
+        private string GetUnits(MetricType type)
+        {
+            switch (type)
+            {
+                case MetricType.Duration:
+                    return "ms";
+                case MetricType.Size:
+                    return "bytes";
+                default:
+                    return null;
             }
         }
     }

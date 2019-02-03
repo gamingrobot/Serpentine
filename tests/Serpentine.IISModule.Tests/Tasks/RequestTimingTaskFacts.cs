@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using Serpentine.IISModule.Models;
 using Serpentine.IISModule.Tasks;
 using Serpentine.IISModule.Tasks.Helpers;
 using Xunit;
@@ -103,7 +104,7 @@ namespace Serpentine.IISModule.Tests.Tasks
 
             //Assert
             metricsResponse.Received()
-                .AddMetric(Arg.Is("request-time"), Arg.Any<string>(), requestTime, Arg.Any<string>());
+                .AddMetric(Arg.Is("request-time"), Arg.Any<string>(), requestTime, Arg.Any<MetricType>());
         }
 
         [Fact]
@@ -124,7 +125,7 @@ namespace Serpentine.IISModule.Tests.Tasks
 
             //Assert
             metricsResponse.Received()
-                .AddMetric(Arg.Is("request-handler-time"), Arg.Any<string>(), handlerTime, Arg.Any<string>());
+                .AddMetric(Arg.Is("request-handler-time"), Arg.Any<string>(), handlerTime, Arg.Any<MetricType>());
         }
     }
 }

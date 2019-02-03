@@ -4,6 +4,7 @@ using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NSubstitute;
+using Serpentine.IISModule.Models;
 using Serpentine.IISModule.Tasks;
 using Serpentine.IISModule.Tasks.Helpers;
 using Xunit;
@@ -44,7 +45,7 @@ namespace Serpentine.IISModule.Tests.Tasks
 
             //Assert
             metricsResponse.Received()
-                .AddMetric(Arg.Is("response-size"), Arg.Any<string>(), dummyBytes.Length, Arg.Any<string>());
+                .AddMetric(Arg.Is("response-size"), Arg.Any<string>(), dummyBytes.Length, Arg.Any<MetricType>());
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using System;
+using Serpentine.IISModule.Models;
 using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
@@ -34,13 +35,13 @@ namespace Serpentine.IISModule.Tasks
             var result = UpdateResponseSizes(sizeFilter.Length);
 
             _taskContext.MetricsResponse
-                .AddMetric("response-size", "Response Size", sizeFilter.Length, "bytes");
+                .AddMetric("response-size", "Response Size", sizeFilter.Length, MetricType.Size);
             _taskContext.MetricsResponse
-                .AddMetric("response-size-min", "Response Size Min", result.MinimumSize, "bytes");
+                .AddMetric("response-size-min", "Response Size Min", result.MinimumSize, MetricType.Size);
             _taskContext.MetricsResponse
-                .AddMetric("response-size-max", "Response Size Max", result.MaximumSize, "bytes");
+                .AddMetric("response-size-max", "Response Size Max", result.MaximumSize, MetricType.Size);
             _taskContext.MetricsResponse
-                .AddMetric("response-size-avg", "Response Size Avg", Convert.ToInt64(result.AverageSize), "bytes");
+                .AddMetric("response-size-avg", "Response Size Avg", Convert.ToInt64(result.AverageSize), MetricType.Size);
         }
 
         private ResponseSize UpdateResponseSizes(long responseSize)
