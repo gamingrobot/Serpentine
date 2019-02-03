@@ -64,7 +64,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             task.EndRequest();
 
             //Assert
-            storage.Get<ResponseSizeTask.ResponseSize>(nameof(ResponseSizeTask)).Should().BeOfType<ResponseSizeTask.ResponseSize>();
+            storage.Get<ResponseSizeTask.ResponseSize>(nameof(ResponseSizeTask)).Should()
+                .BeOfType<ResponseSizeTask.ResponseSize>();
         }
 
 
@@ -142,8 +143,9 @@ namespace Serpentine.IISModule.Tests.Tasks
             }
 
             //Assert
-            var correctAvg = requests.Sum() / requests.Count;
-            storage.Get<ResponseSizeTask.ResponseSize>(nameof(ResponseSizeTask)).AverageSize.Should().Be(correctAvg);
+            var correctAvg = requests.Sum() / (double) requests.Count;
+            var assertAverage = storage.Get<ResponseSizeTask.ResponseSize>(nameof(ResponseSizeTask)).AverageSize;
+            assertAverage.Should().Be(correctAvg);
         }
 
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
@@ -184,6 +186,5 @@ namespace Serpentine.IISModule.Tests.Tasks
 
             public override long Position { get; set; }
         }
-
     }
 }

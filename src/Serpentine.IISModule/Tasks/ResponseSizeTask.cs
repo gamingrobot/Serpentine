@@ -1,4 +1,5 @@
-﻿using Serpentine.IISModule.Tasks.Helpers;
+﻿using System;
+using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
@@ -32,10 +33,14 @@ namespace Serpentine.IISModule.Tasks
             var sizeFilter = _taskContext.HttpContext.Response.Filter;
             var result = UpdateResponseSizes(sizeFilter.Length);
 
-            _taskContext.MetricsResponse.AddMetric("response-size", "Response Size", sizeFilter.Length, "bytes");
-            _taskContext.MetricsResponse.AddMetric("response-size-min", "Response Size Min", result.MinimumSize, "bytes");
-            _taskContext.MetricsResponse.AddMetric("response-size-max", "Response Size Max", result.MaximumSize, "bytes");
-            _taskContext.MetricsResponse.AddMetric("response-size-avg", "Response Size Avg", result.AverageSize, "bytes");
+            _taskContext.MetricsResponse
+                .AddMetric("response-size", "Response Size", sizeFilter.Length, "bytes");
+            _taskContext.MetricsResponse
+                .AddMetric("response-size-min", "Response Size Min", result.MinimumSize, "bytes");
+            _taskContext.MetricsResponse
+                .AddMetric("response-size-max", "Response Size Max", result.MaximumSize, "bytes");
+            _taskContext.MetricsResponse
+                .AddMetric("response-size-avg", "Response Size Avg", Convert.ToInt64(result.AverageSize), "bytes");
         }
 
         private ResponseSize UpdateResponseSizes(long responseSize)
@@ -65,7 +70,8 @@ namespace Serpentine.IISModule.Tasks
                 }
 
                 currentState.Count++;
-                currentState.AverageSize = (currentState.AverageSize * (currentState.Count - 1) + responseSize) / currentState.Count;
+                var newSum = (currentState.AverageSize * (currentState.Count - 1) + responseSize);
+                currentState.AverageSize =  newSum / currentState.Count;
 
                 _taskContext.ApplicationStorage.Set(nameof(ResponseSizeTask), currentState);
 
@@ -77,7 +83,7 @@ namespace Serpentine.IISModule.Tasks
         {
             public long MinimumSize { get; set; }
             public long MaximumSize { get; set; }
-            public long AverageSize { get; set; }
+            public double AverageSize { get; set; }
             public long Count { get; set; }
         }
     }
