@@ -2,15 +2,26 @@
 
 namespace Serpentine.IISModule.Tasks.Helpers
 {
-    internal class RequestTimer
+    internal interface IRequestTimer
+    {
+        void StartRequestTimer();
+        void StopRequestTimer();
+        void StartHandlerTimer();
+        void StopHandlerTimer();
+        long GetRequestMilliseconds();
+        long GetHandlerMilliseconds();
+        void Reset();
+    }
+
+    internal class RequestTimer : IRequestTimer
     {
         private readonly Stopwatch _requestStopwatch;
         private readonly Stopwatch _handlerStopwatch;
 
         public RequestTimer()
         {
-           _requestStopwatch = new Stopwatch();
-           _handlerStopwatch = new Stopwatch();
+            _requestStopwatch = new Stopwatch();
+            _handlerStopwatch = new Stopwatch();
         }
 
         public void StartRequestTimer()
@@ -48,6 +59,5 @@ namespace Serpentine.IISModule.Tasks.Helpers
             _requestStopwatch.Reset();
             _handlerStopwatch.Reset();
         }
-
     }
 }

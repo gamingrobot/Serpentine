@@ -11,6 +11,7 @@ namespace Serpentine.IISModule.Tasks.Helpers
         {
             _baseStream = baseStream;
         }
+
         public override void Flush()
         {
             _baseStream.Flush();
@@ -41,6 +42,7 @@ namespace Serpentine.IISModule.Tasks.Helpers
         public override bool CanSeek => _baseStream.CanSeek;
         public override bool CanWrite => _baseStream.CanWrite;
         public override long Length => _size;
+
         public override long Position
         {
             get => _baseStream.Position;

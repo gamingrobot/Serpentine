@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tasks\IMetricsTask.cs" />
+    <Compile Include="MetricTaskContext.cs" />
+    <Compile Include="MetricsEventHandler.cs" />
+    <Compile Include="Tasks\IMetricTask.cs" />
     <Compile Include="Tasks\RequestTimingTask.cs" />
     <Compile Include="Tasks\Helpers\RequestTimer.cs" />
     <Compile Include="Tasks\Helpers\ResponseSizeFilter.cs" />

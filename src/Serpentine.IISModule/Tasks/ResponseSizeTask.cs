@@ -1,21 +1,26 @@
 ﻿using System.Net.Mime;
-using System.Web;
 using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
-    internal class ResponseSizeTask : IMetricsTask
+    internal class ResponseSizeTask : IMetricTask
     {
-        private readonly HttpApplication _application;
+        private readonly IResponseSizeStorage _storage;
+        private readonly IMetricTaskContext _taskContext;
 
-        public ResponseSizeTask(HttpApplication application)
+        public ResponseSizeTask(IMetricTaskContext taskContext) : this(taskContext, ResponseSizeStorage.Instance)
         {
-            _application = application;
+        }
+
+        internal ResponseSizeTask(IMetricTaskContext taskContext, IResponseSizeStorage storage)
+        {
+            _taskContext = taskContext;
+            _storage = storage;
         }
 
         public void BeginRequest()
         {
-            _application.Context.Response.Filter = new ResponseSizeFilter(_application.Context.Response.Filter);
+            _taskContext.HttpContext.Response.Filter = new ResponseSizeFilter(_taskContext.HttpContext.Response.Filter);
         }
 
         public void PreHandler()
@@ -28,20 +33,20 @@ namespace Serpentine.IISModule.Tasks
 
         public void EndRequest()
         {
-            var sizeFilter = _application.Context.Response.Filter;
-            ResponseSizeStorage.Instance.UpdateSize(sizeFilter.Length);
+            var sizeFilter = _taskContext.HttpContext.Response.Filter;
+            _storage.RecalculateSizes(sizeFilter.Length);
 
-            _application.Context.Response.AppendHeader("X-Serpentine-RequestSize", sizeFilter.Length.ToString());
-            _application.Context.Response.AppendHeader("X-Serpentine-RequestSizeMin", ResponseSizeStorage.Instance.MinimumSize.ToString());
-            _application.Context.Response.AppendHeader("X-Serpentine-RequestSizeMax", ResponseSizeStorage.Instance.MaximumSize.ToString());
-            _application.Context.Response.AppendHeader("X-Serpentine-RequestSizeAvg", ResponseSizeStorage.Instance.AverageSize.ToString());
+            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-ResponseSize", sizeFilter.Length.ToString());
+            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-ResponseSizeMin", ResponseSizeStorage.Instance.MinimumSize.ToString());
+            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-ResponseSizeMax", ResponseSizeStorage.Instance.MaximumSize.ToString());
+            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-ResponseSizeAvg", ResponseSizeStorage.Instance.AverageSize.ToString());
 
             //Inject html
-            if (_application.Context.Response.ContentType == MediaTypeNames.Text.Html)
+            if (_taskContext.HttpContext.Response.ContentType == MediaTypeNames.Text.Html)
             {
-                _application.Context.Response.Write($"RequestSizeMin: {ResponseSizeStorage.Instance.MinimumSize} bytes<br/>");
-                _application.Context.Response.Write($"RequestSizeMax: {ResponseSizeStorage.Instance.MaximumSize} bytes<br/>");
-                _application.Context.Response.Write($"RequestSizeAvg: {ResponseSizeStorage.Instance.AverageSize} bytes<br/>");
+                _taskContext.HttpContext.Response.Write($"ResponseSizeMin: {ResponseSizeStorage.Instance.MinimumSize} bytes<br/>");
+                _taskContext.HttpContext.Response.Write($"ResponseSizeMax: {ResponseSizeStorage.Instance.MaximumSize} bytes<br/>");
+                _taskContext.HttpContext.Response.Write($"ResponseSizeAvg: {ResponseSizeStorage.Instance.AverageSize} bytes<br/>");
             }
         }
     }

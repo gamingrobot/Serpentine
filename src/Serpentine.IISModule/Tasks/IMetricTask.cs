@@ -1,6 +1,6 @@
 ﻿namespace Serpentine.IISModule.Tasks
 {
-    internal interface IMetricsTask
+    internal interface IMetricTask
     {
         void BeginRequest();
 

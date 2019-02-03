@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web;
-using Serpentine.IISModule.Tasks;
 
 namespace Serpentine.IISModule
 {
     public class SerpentineModule : IHttpModule
     {
-        private IList<IMetricsTask> _metricsTasks;
+        private const string TaskManagerKey = "SerpentineMetricsTaskManager";
 
         public void Init(HttpApplication context)
         {
-            _metricsTasks = new List<IMetricsTask>
-            {
-                new RequestTimingTask(context),
-                new ResponseSizeTask(context)
-            };
-
             context.BeginRequest += OnBeginRequest;
             context.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
             context.PostRequestHandlerExecute += OnPostRequestHandlerExecute;
@@ -25,33 +17,46 @@ namespace Serpentine.IISModule
 
         private void OnBeginRequest(object sender, EventArgs e)
         {
-            foreach (var task in _metricsTasks)
-            {
-                task.BeginRequest();
-            }
+            HandleEvent(sender, (manager, context) => manager.BeginRequest(context));
         }
 
         private void OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
-            foreach (var task in _metricsTasks)
-            {
-                task.PreHandler();
-            }
+            HandleEvent(sender, (task, context) => task.PreHandler(context));
         }
 
         private void OnPostRequestHandlerExecute(object sender, EventArgs e)
         {
-            foreach (var task in _metricsTasks)
-            {
-                task.PostHandler();
-            }
+            HandleEvent(sender, (task, context) => task.PostHandler(context));
         }
 
         private void OnEndRequest(object sender, EventArgs e)
         {
-            foreach (var task in _metricsTasks)
+            HandleEvent(sender, (task, context) => task.EndRequest(context));
+        }
+
+        private void HandleEvent(object sender, Action<IMetricsEventHandler, HttpContextBase> handler)
+        {
+            try
             {
-                task.EndRequest();
+                var application = (HttpApplication) sender;
+                var wrapper = new HttpContextWrapper(application.Context);
+                IMetricsEventHandler metricsEventHandler;
+                if (wrapper.Items.Contains(TaskManagerKey))
+                {
+                    metricsEventHandler = (IMetricsEventHandler) wrapper.Items[TaskManagerKey];
+                }
+                else
+                {
+                    metricsEventHandler = new MetricsEventHandler();
+                    wrapper.Items[TaskManagerKey] = metricsEventHandler;
+                }
+
+                handler(metricsEventHandler, wrapper);
+            }
+            catch (Exception)
+            {
+                //Fail quietly (we don't want to disrupt the application)
             }
         }
 

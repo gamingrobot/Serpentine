@@ -2,9 +2,19 @@
 
 namespace Serpentine.IISModule.Tasks.Helpers
 {
-    internal class ResponseSizeStorage
+    internal interface IResponseSizeStorage
     {
-        private static readonly Lazy<ResponseSizeStorage> LazyInstance = new Lazy<ResponseSizeStorage>(() => new ResponseSizeStorage());
+        long MinimumSize { get; }
+        long MaximumSize { get; }
+        long AverageSize { get; }
+        void RecalculateSizes(long size);
+    }
+
+    //Singleton because multiple httpapplications can exist per worker process
+    internal class ResponseSizeStorage : IResponseSizeStorage
+    {
+        private static readonly Lazy<ResponseSizeStorage> LazyInstance =
+            new Lazy<ResponseSizeStorage>(() => new ResponseSizeStorage());
 
         public static ResponseSizeStorage Instance => LazyInstance.Value;
 
@@ -23,7 +33,7 @@ namespace Serpentine.IISModule.Tasks.Helpers
             AverageSize = 0;
         }
 
-        public void UpdateSize(long size)
+        public void RecalculateSizes(long size)
         {
             lock (_lock)
             {
@@ -31,6 +41,7 @@ namespace Serpentine.IISModule.Tasks.Helpers
                 {
                     MinimumSize = size;
                 }
+
                 if (size > MaximumSize)
                 {
                     MaximumSize = size;
@@ -40,6 +51,5 @@ namespace Serpentine.IISModule.Tasks.Helpers
                 AverageSize = (AverageSize * (_count - 1) + size) / _count;
             }
         }
-
     }
 }
