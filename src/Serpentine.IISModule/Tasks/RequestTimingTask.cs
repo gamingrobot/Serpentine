@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using Serpentine.IISModule.Tasks.Helpers;
+﻿using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
@@ -38,16 +37,10 @@ namespace Serpentine.IISModule.Tasks
         {
             _requestTimer.StopRequestTimer();
 
-            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-RequestTime", _requestTimer.GetRequestMilliseconds().ToString());
-            _taskContext.HttpContext.Response.AppendHeader("X-Serpentine-HandlerTime", _requestTimer.GetHandlerMilliseconds().ToString());
-
-
-            //Inject html
-            if (_taskContext.HttpContext.Response.ContentType == MediaTypeNames.Text.Html)
-            {
-                _taskContext.HttpContext.Response.Write($"RequestTime: {_requestTimer.GetRequestMilliseconds()}ms<br/>");
-                _taskContext.HttpContext.Response.Write($"HandlerTime: {_requestTimer.GetHandlerMilliseconds()}ms<br/>");
-            }
+            _taskContext.MetricsResponse.AddMetric("request-time", "Request Time",
+                _requestTimer.GetRequestMilliseconds(), "ms");
+            _taskContext.MetricsResponse.AddMetric("request-handler-time", "Request Handler Time",
+                _requestTimer.GetHandlerMilliseconds(), "ms");
         }
     }
 }

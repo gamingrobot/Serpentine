@@ -33,6 +33,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             var storage = Substitute.For<IResponseSizeStorage>();
             var context = Substitute.For<IMetricTaskContext>();
             context.HttpContext.Response.Filter.Returns(fakeStream);
+            var metricsResponse = Substitute.For<IMetricsResponse>();
+            context.MetricsResponse.Returns(metricsResponse);
 
             var task = new ResponseSizeTask(context, storage);
 
@@ -40,8 +42,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             task.EndRequest();
 
             //Assert
-            context.HttpContext.Response.Received()
-                .AppendHeader(Arg.Is("X-Serpentine-ResponseSize"), Arg.Is(dummyBytes.Length.ToString()));
+            metricsResponse.Received()
+                .AddMetric(Arg.Is("response-size"), Arg.Any<string>(), dummyBytes.Length, Arg.Any<string>());
         }
     }
 }

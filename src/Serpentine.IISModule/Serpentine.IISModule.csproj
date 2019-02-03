@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Metric.cs" />
+    <Compile Include="MetricsResponse.cs" />
     <Compile Include="MetricTaskContext.cs" />
     <Compile Include="MetricsEventHandler.cs" />
     <Compile Include="Tasks\IMetricTask.cs" />

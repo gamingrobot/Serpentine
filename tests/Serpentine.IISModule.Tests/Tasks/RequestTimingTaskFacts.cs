@@ -93,6 +93,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             requestTimer.GetRequestMilliseconds().Returns(requestTime);
 
             var context = Substitute.For<IMetricTaskContext>();
+            var metricsResponse = Substitute.For<IMetricsResponse>();
+            context.MetricsResponse.Returns(metricsResponse);
 
             var task = new RequestTimingTask(context, requestTimer);
 
@@ -100,8 +102,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             task.EndRequest();
 
             //Assert
-            context.HttpContext.Response.Received()
-                .AppendHeader(Arg.Is("X-Serpentine-RequestTime"), Arg.Is(requestTime.ToString()));
+            metricsResponse.Received()
+                .AddMetric(Arg.Is("request-time"), Arg.Any<string>(), requestTime, Arg.Any<string>());
         }
 
         [Fact]
@@ -112,6 +114,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             requestTimer.GetHandlerMilliseconds().Returns(handlerTime);
 
             var context = Substitute.For<IMetricTaskContext>();
+            var metricsResponse = Substitute.For<IMetricsResponse>();
+            context.MetricsResponse.Returns(metricsResponse);
 
             var task = new RequestTimingTask(context, requestTimer);
 
@@ -119,8 +123,8 @@ namespace Serpentine.IISModule.Tests.Tasks
             task.EndRequest();
 
             //Assert
-            context.HttpContext.Response.Received()
-                .AppendHeader(Arg.Is("X-Serpentine-HandlerTime"), Arg.Is(handlerTime.ToString()));
+            metricsResponse.Received()
+                .AddMetric(Arg.Is("request-handler-time"), Arg.Any<string>(), handlerTime, Arg.Any<string>());
         }
     }
 }

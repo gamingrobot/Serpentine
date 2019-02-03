@@ -61,6 +61,8 @@ namespace Serpentine.IISModule
             {
                 metricsTask.EndRequest();
             }
+
+            _taskContext.MetricsResponse.Render(context.Response);
         }
     }
 }
