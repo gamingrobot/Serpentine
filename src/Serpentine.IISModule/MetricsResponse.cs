@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using System.Web;
 using Serpentine.IISModule.Models;
@@ -37,26 +38,40 @@ namespace Serpentine.IISModule
             });
         }
 
-        public void Render(HttpResponseBase baseResponse)
+        public void Render(HttpResponseBase response)
+        {
+
+            RenderHeaders(response);
+            if (response.ContentType == MediaTypeNames.Text.Html)
+            {
+                RenderHtml(response);
+            }
+               
+        }
+
+        private void RenderHeaders(HttpResponseBase response)
         {
             foreach (var metric in _metrics)
             {
-                //Set header
                 if (metric.Type == MetricType.Duration)
                 {
-                    baseResponse.AppendHeader("Server-Timing", $"{metric.Name};dur={metric.Value}");
+                    response.AppendHeader("Server-Timing", $"{metric.Name};dur={metric.Value}");
                 }
                 else
                 {
-                    baseResponse.AppendHeader($"x-serpentine-{metric.Name}", $"{metric.Value}");
-                }
-
-                //Inject html
-                if (baseResponse.ContentType == MediaTypeNames.Text.Html)
-                {
-                    baseResponse.Write($"{metric.FullName}: {metric.Value} {GetUnits(metric.Type)}<br/>");
+                    response.AppendHeader($"x-serpentine-{metric.Name}", $"{metric.Value}");
                 }
             }
+        }
+
+        private void RenderHtml(HttpResponseBase response)
+        {
+            response.Write($"<!--{Environment.NewLine}");
+            foreach (var metric in _metrics)
+            {
+                response.Write($"{metric.FullName}: {metric.Value} {GetUnits(metric.Type)}{Environment.NewLine}");
+            }
+            response.Write("--!>");
         }
 
         private string GetUnits(MetricType type)
