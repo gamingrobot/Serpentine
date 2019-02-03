@@ -6,6 +6,7 @@ namespace Serpentine.IISModule
     {
         HttpContextBase HttpContext { get; set; }
         IMetricsResponse MetricsResponse { get; }
+        IApplicationStorage ApplicationStorage { get; }
     }
 
     internal class MetricTaskContext : IMetricTaskContext
@@ -14,12 +15,11 @@ namespace Serpentine.IISModule
 
         public IMetricsResponse MetricsResponse { get; }
 
-        public MetricTaskContext() : this(new MetricsResponse())
-        {
-        }
+        public IApplicationStorage ApplicationStorage { get;  }
 
-        internal MetricTaskContext(IMetricsResponse metricsResponse)
+        public MetricTaskContext(IApplicationStorage storage, IMetricsResponse metricsResponse)
         {
+            ApplicationStorage = storage;
             MetricsResponse = metricsResponse;
         }
     }

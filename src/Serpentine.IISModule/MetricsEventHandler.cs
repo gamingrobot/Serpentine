@@ -17,9 +17,9 @@ namespace Serpentine.IISModule
         private readonly IList<IMetricTask> _metricTasks;
         private readonly IMetricTaskContext _taskContext;
 
-        public MetricsEventHandler()
+        public MetricsEventHandler(IMetricTaskContext taskContext)
         {
-            _taskContext = new MetricTaskContext();
+            _taskContext = taskContext;
             _metricTasks = new List<IMetricTask>
             {
                 new RequestTimingTask(_taskContext),

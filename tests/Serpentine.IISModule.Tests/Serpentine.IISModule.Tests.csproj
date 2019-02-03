@@ -80,8 +80,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationStorageMock.cs" />
+    <Compile Include="MetricsEventHandlerFacts.cs" />
     <Compile Include="MetricsResponseFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\Helpers\ResponseSizeFilterFacts.cs" />
     <Compile Include="Tasks\ResponseSizeTaskFacts.cs" />
     <Compile Include="Tasks\RequestTimingTaskFacts.cs" />
   </ItemGroup>

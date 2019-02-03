@@ -50,7 +50,7 @@
     <Compile Include="Tasks\RequestTimingTask.cs" />
     <Compile Include="Tasks\Helpers\RequestTimer.cs" />
     <Compile Include="Tasks\Helpers\ResponseSizeFilter.cs" />
-    <Compile Include="Tasks\Helpers\ResponseSizeStorage.cs" />
+    <Compile Include="ApplicationStorage.cs" />
     <Compile Include="Tasks\ResponseSizeTask.cs" />
     <Compile Include="SerpentineModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -48,7 +48,8 @@ namespace Serpentine.IISModule
                 }
                 else
                 {
-                    metricsEventHandler = new MetricsEventHandler();
+                    var taskContext = new MetricTaskContext(ApplicationStorage.Instance, new MetricsResponse());
+                    metricsEventHandler = new MetricsEventHandler(taskContext);
                     wrapper.Items[TaskManagerKey] = metricsEventHandler;
                 }
 
