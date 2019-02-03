@@ -23,7 +23,7 @@ namespace Serpentine.IISModule.Tests
                 return default(T);
             }
 
-            return (T)_hashtable[key];
+            return (T) _hashtable[key];
         }
     }
 }

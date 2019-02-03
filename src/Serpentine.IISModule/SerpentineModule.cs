@@ -57,6 +57,7 @@ namespace Serpentine.IISModule
             }
             catch (Exception)
             {
+                //TODO: log failure
                 //Fail quietly (we don't want to disrupt the application)
             }
         }

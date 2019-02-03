@@ -3,6 +3,7 @@
     <AllowParallelTestExecution>True</AllowParallelTestExecution>
     <MetricsExclusionList>
       <Value>tests\Serpentine.IISModule.Tests\Serpentine.IISModule.Tests.csproj</Value>
+      <Value>src\Serpentine.DummyMVC\Serpentine.DummyMVC.csproj</Value>
     </MetricsExclusionList>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>

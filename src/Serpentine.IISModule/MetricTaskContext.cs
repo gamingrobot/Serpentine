@@ -15,7 +15,7 @@ namespace Serpentine.IISModule
 
         public IMetricsResponse MetricsResponse { get; }
 
-        public IApplicationStorage ApplicationStorage { get;  }
+        public IApplicationStorage ApplicationStorage { get; }
 
         public MetricTaskContext(IApplicationStorage storage, IMetricsResponse metricsResponse)
         {
