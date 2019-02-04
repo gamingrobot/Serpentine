@@ -8,9 +8,26 @@ namespace Serpentine.IISModule
 {
     internal interface IMetricsResponse
     {
+        /// <summary>
+        /// Adds Metric to be rendered to the response
+        /// </summary>
+        /// <param name="metric"></param>
         void AddMetric(Metric metric);
-        void AddMetric(string name, string fullName, long value, MetricType type);
-        void Render(HttpResponseBase baseResponse);
+
+        /// <summary>
+        /// Adds Metric to be rendered to the response
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="displayName"></param>
+        /// <param name="value"></param>
+        /// <param name="type"></param>
+        void AddMetric(string name, string displayName, long value, MetricType type);
+
+        /// <summary>
+        /// Output metrics to the response
+        /// </summary>
+        /// <param name="response"></param>
+        void Render(HttpResponseBase response);
     }
 
     internal class MetricsResponse : IMetricsResponse
@@ -27,12 +44,12 @@ namespace Serpentine.IISModule
             _metrics.Add(metric);
         }
 
-        public void AddMetric(string name, string fullName, long value, MetricType type)
+        public void AddMetric(string name, string displayName, long value, MetricType type)
         {
             AddMetric(new Metric
             {
                 Name = name,
-                FullName = fullName,
+                DisplayName = displayName,
                 Value = value,
                 Type = type
             });
@@ -69,7 +86,7 @@ namespace Serpentine.IISModule
             response.Write($"<!--{Environment.NewLine}");
             foreach (var metric in _metrics)
             {
-                response.Write($"{metric.FullName}: {metric.Value} {GetUnits(metric.Type)}{Environment.NewLine}");
+                response.Write($"{metric.DisplayName}: {metric.Value} {GetUnits(metric.Type)}{Environment.NewLine}");
             }
             response.Write("--!>");
         }

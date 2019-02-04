@@ -64,7 +64,7 @@ namespace Serpentine.IISModule.Tests
 
             //Assert
             httpResponse.Received().Write(Arg.Is<string>(x =>
-                x.Contains(metric.FullName) &&
+                x.Contains(metric.DisplayName) &&
                 x.Contains(metric.Value.ToString())
             ));
         }
