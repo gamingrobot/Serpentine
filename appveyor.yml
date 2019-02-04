@@ -8,6 +8,6 @@ before_build:
 build:
   verbosity: minimal
 artifacts:
-- path: src\Serpentine.IISModule\bin\$(configuration)\*
+- path: src\Serpentine.IISModule\bin\$(configuration)
   name: Serpentine.IISModule
   type: zip
