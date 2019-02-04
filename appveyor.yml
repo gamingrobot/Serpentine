@@ -1,0 +1,13 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017
+configuration: Release
+before_build:
+- ps: nuget restore
+build:
+  verbosity: minimal
+artifacts:
+- path: src\Serpentine.IISModule\bin\$(configuration)\*
+  name: Serpentine.IISModule
+  type: zip
