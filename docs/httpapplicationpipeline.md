@@ -1,5 +1,6 @@
 
 # HTTPApplication Pipeline
+
 https://docs.microsoft.com/en-us/previous-versions/bb470252%28v%3dvs.140%29#life-cycle-stages
 
 1. Validate the request, which examines the information sent by the browser and determines whether it contains potentially malicious markup. For more information, see ValidateRequest and Script Exploits Overview.
@@ -30,6 +31,7 @@ https://docs.microsoft.com/en-us/previous-versions/bb470252%28v%3dvs.140%29#life
 26. Raise the PreSendRequestContent event.
 
 ## Important Events
+
 1. BeginRequest
 2. PreRequestHandlerExecute
 3. PostRequestHandlerExecute

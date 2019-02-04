@@ -9,3 +9,11 @@ http://blog.differentpla.net/blog/2012/07/14/streaming-http-responses-in-net/
 https://docs.microsoft.com/en-us/dotnet/api/system.web.httpapplication.logrequest?redirectedfrom=MSDN&view=netframework-4.7.2
 https://stackoverflow.com/questions/2749868/new-eventhandlermethod-vs-method
 https://stackoverflow.com/questions/12636613/how-to-calculate-moving-average-without-keeping-the-count-and-data-total/38901126#38901126
+https://piers7.blogspot.com/2005/11/threadstatic-callcontext-and_02.html
+https://www.splinter.com.au/httpcontext-vs-httpcontextbase-vs-httpcontext/
+https://oliversturm.com/2005/05/10/internalsvisibleto-sn/
+https://blogs.msdn.microsoft.com/tmarq/2007/07/20/asp-net-thread-usage-on-iis-7-5-iis-7-0-and-iis-6-0/
+https://www.codemag.com/article/0511061/A-Low-Level-Look-at-ASP.NET-Architecture
+https://calendar.perfplanet.com/2018/server-timing/
+https://www.w3.org/TR/server-timing/
+https://codingsight.com/under-the-hood-of-stopwatch/

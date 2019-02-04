@@ -4,6 +4,9 @@ using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
+    /// <summary>
+    /// Calculates response size (min, max, average)
+    /// </summary>
     internal class ResponseSizeTask : IMetricTask
     {
         private readonly IMetricTaskContext _taskContext;

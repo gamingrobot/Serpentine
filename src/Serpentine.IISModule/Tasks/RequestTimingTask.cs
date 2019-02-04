@@ -3,6 +3,9 @@ using Serpentine.IISModule.Tasks.Helpers;
 
 namespace Serpentine.IISModule.Tasks
 {
+    /// <summary>
+    /// Calculates time for Request and IHttpHandler
+    /// </summary>
     internal class RequestTimingTask : IMetricTask
     {
         private readonly IRequestTimer _requestTimer;
