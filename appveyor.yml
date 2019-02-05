@@ -10,7 +10,7 @@ before_build:
 build:
   verbosity: minimal
 test_script:
-- OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\tests\**\*.dll -noshadow" -filter:"+[Serpentine.IISModule*]* -[Serpentine.IISModule.Tests*]*" -output:".\coverage.xml"
+- OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"tests\Serpentine.IISModule.Tests\bin\%configuration%\Serpentine.IISModule.Tests.dll -noshadow" -filter:"+[Serpentine.IISModule*]* -[Serpentine.IISModule.Tests*]*" -output:".\coverage.xml"
 - codecov -f "coverage.xml
 assembly_info:
   patch: true
