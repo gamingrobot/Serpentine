@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.1.0.{build}
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
@@ -20,3 +20,12 @@ artifacts:
 - path: src\Serpentine.IISModule\bin\$(configuration)
   name: Serpentine.IISModule
   type: zip
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: s8fov/sET5a7fqyi0ddedgj+iqB6YfodYj0+4ppKBqmldhfqS7yam2mihM9ZsAaZ
+  artifact: /.*\.zip/
+  draft: false
+  prerelease: false
+  on:
+    APPVEYOR_REPO_TAG: true
