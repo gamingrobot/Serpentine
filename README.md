@@ -29,7 +29,7 @@ Small IIS profiler for web requests using IHttpModule
 
 ## Limitations
 
-- Metrics are per IIS Worker Process (Only an issue if you have changed `Maximum Worker Processes`)
+- Metrics are per IIS Worker Process (Only an issue if you have changed `Maximum Worker Processes` in the AppPool settings)
 - IIS Integrated Pipeline only
 
 ## Requirements
