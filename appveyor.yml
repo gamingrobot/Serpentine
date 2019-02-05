@@ -4,9 +4,18 @@ pull_requests:
 image: Visual Studio 2017
 configuration: Release
 before_build:
-- ps: nuget restore
+- nuget restore
+- choco install opencover.portable
+- choco install codecov
 build:
   verbosity: minimal
+test_script:
+- OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\tests\**\*.dll -noshadow" -filter:"+[Serpentine.IISModule*]* -[Serpentine.IISModule.Tests*]*" -output:".\coverage.xml"
+- codecov -f "coverage.xml
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_file_version: '{version}'
 artifacts:
 - path: src\Serpentine.IISModule\bin\$(configuration)
   name: Serpentine.IISModule
